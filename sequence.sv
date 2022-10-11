@@ -13,7 +13,7 @@ class mysequence extends uvm_sequence;
 	for(int i=0; i<num; i++)begin
 		trans m_trans = trans::type_id::create("m_trans");
 		start_item(m_trans);
-		m_item.randomize();
+		m_trans.randomize();
 		`uvm_info("SEQ", $sformatf("Generate new item:",m_trans.convert2str()),UVM_HIGH);
 		finish_item(m_trans);
 	end	
