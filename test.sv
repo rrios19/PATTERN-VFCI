@@ -1,59 +1,41 @@
-class base_test extends uvm_test;
-	`uvm_component_utils(base_test)
-  	function new(string name = "base_test", uvm_component parent=null);
+class mytest extends uvm_test;
+	
+	`uvm_component_utils(mytest)
+  	
+	function new(string name = "mytest", uvm_component parent=null);
     		super.new(name, parent);
   	endfunction
 
-  	env  	e0;
+  	env  	env_inst;
+	
   	bit[`LENGTH-1:0]  pattern = 4'b1011;
-  	mysequence 		seq;
-  	virtual  	dut_if 	vif;
+  	
+	mysequence 	seq;
+  	virtual dut_if 	vif;
 
   	virtual function void build_phase(uvm_phase phase);
+    		pattern = 4'b1011;
     		super.build_phase(phase);
 
-    	// Create the environment
-    	e0 = env::type_id::create("e0", this);
-
-    	// Get virtual IF handle from top level and pass it to everything
-    	// in env level
-    	if (!uvm_config_db#(virtual dut_if)::get(this, "", "des_vif", vif))
-      		`uvm_fatal("TEST", "Did not get vif")
-    		uvm_config_db#(virtual dut_if)::set(this, "e0.a0.*", "dut_vif", vif);
-		// Setup pattern queue and place into config db
+    		env_inst = env::type_id::create("env_inst", this);
+		
+		if(!uvm_config_db#(virtual dut_if)::get(this,"","dut_vif",vif))
+			`uvm_fatal("Test", "No encontro vif")
+    		uvm_config_db#(virtual dut_if)::set(this, "env_inst.agn_inst.*", "dut_vif", vif);
     		uvm_config_db#(bit[`LENGTH-1:0])::set(this, "*", "ref_pattern", pattern);
 
-    		// Create sequence and randomize it
     		seq = mysequence::type_id::create("seq");
-    		seq.randomize();
+    		seq.randomize() with {num inside {[20:40]};};
   	endfunction
 
   	virtual task run_phase(uvm_phase phase);
     		phase.raise_objection(this);
-    		apply_reset();
-    		seq.start(e0.a0.s0);
-    		#200;
-    		phase.drop_objection(this);
-  	endtask
-
-  	virtual task apply_reset();
     		vif.rstn <= 0;
     		vif.in <= 0;
     		repeat(5) @ (posedge vif.clk);
     		vif.rstn <= 1;
     		repeat(10) @ (posedge vif.clk);
+    		seq.start(env_inst.agn_inst.seq_inst);
+    		phase.drop_objection(this);
   	endtask
-endclass
-
-class test_1011 extends base_test;
-	`uvm_component_utils(test_1011)
-  	function new(string name="test_1011", uvm_component parent=null);
-    		super.new(name, parent);
-  	endfunction
-
-  	virtual function void build_phase(uvm_phase phase);
-    		pattern = 4'b1011;
-    		super.build_phase(phase);
-    		seq.randomize() with { num inside {[300:500]}; };
-  	endfunction
 endclass

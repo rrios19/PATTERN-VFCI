@@ -1,23 +1,25 @@
 class agent extends uvm_agent;
-  	`uvm_component_utils(agent)
-  	function new(string name="agent", uvm_component parent=null);
+  	
+	`uvm_component_utils(agent)
+  	
+	function new(string name="agent", uvm_component parent=null);
     		super.new(name, parent);
   	endfunction
 
-	driver   		d0; 		// Driver handle
-  	monitor 		m0; 		// Monitor handle
-  	uvm_sequencer #(trans)	s0; 		// Sequencer Handle
+	driver   		drv_inst; 		
+  	monitor 		mnt_inst; 	
+  	uvm_sequencer #(trans)	seq_inst;
 
 	virtual function void build_phase(uvm_phase phase);
     		super.build_phase(phase);
-    		s0 = uvm_sequencer#(trans)::type_id::create("s0", this);
-    		d0 = driver::type_id::create("d0", this);
-    		m0 = monitor::type_id::create("m0", this);
+    		seq_inst = uvm_sequencer#(trans)::type_id::create("seq_inst", this);
+    		drv_inst = driver::type_id::create("drv_inst", this);
+    		mnt_inst = monitor::type_id::create("mnt_inst", this);
   	endfunction
 
   	virtual function void connect_phase(uvm_phase phase);
     		super.connect_phase(phase);
-    		d0.seq_item_port.connect(s0.seq_item_export);
+    		drv_inst.seq_item_port.connect(seq_inst.seq_item_export);
 	endfunction
 
 endclass

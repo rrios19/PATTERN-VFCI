@@ -1,4 +1,5 @@
 class mysequence extends uvm_sequence;
+
 	`uvm_object_utils(mysequence);
 
 	function new (string name = "mysequence");
@@ -14,9 +15,9 @@ class mysequence extends uvm_sequence;
 		trans m_trans = trans::type_id::create("m_trans");
 		start_item(m_trans);
 		m_trans.randomize();
-		`uvm_info("SEQ", $sformatf("Generate new item:",m_trans.convert2str()),UVM_HIGH);
+		`uvm_info("Sequence", $sformatf("Nuevo item: %s",m_trans.convert2str()),UVM_HIGH);
 		finish_item(m_trans);
 	end	
-	`uvm_info("SEQ", $sformatf("Done generation of %0d items", num),UVM_LOW);
+	`uvm_info("Sequence", $sformatf("Creacion de %0d items", num),UVM_LOW);
 	endtask
 endclass

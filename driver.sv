@@ -11,23 +11,23 @@ class driver extends uvm_driver #(trans);
   	virtual function void build_phase(uvm_phase phase);
     		super.build_phase(phase);
     		if (!uvm_config_db#(virtual dut_if)::get(this, "", "dut_vif", vif))
-      			`uvm_fatal("DRV", "Could not get vif")
+      			`uvm_fatal("Driver", "Error no se encontro vif")
   	endfunction
 
-  	virtual task run_phase(uvm_phase phase);
+  	virtual task run_phase(uvm_phase phase); // Le quitamos el virtual
     		super.run_phase(phase);
     	
 		forever begin
-      			trans m_item;
-      			`uvm_info("DRV", $sformatf("Wait for item from sequencer"), UVM_HIGH)
-      			seq_item_port.get_next_item(m_item);
-      			drive_item(m_item);
+      			trans m_trans;
+      			`uvm_info("Driver", $sformatf("Esperando item"), UVM_HIGH)
+      			seq_item_port.get_next_item(m_trans);
+      			drive_item(m_trans);
       			seq_item_port.item_done();
     		end
   	endtask
 
-	virtual task drive_item(trans m_item);
+	virtual task drive_item(trans m_trans);
     		@(vif.cb);
-      		vif.cb.in <= m_item.in;
+      		vif.cb.in <= m_trans.in;
   	endtask
 endclass

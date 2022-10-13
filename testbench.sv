@@ -2,16 +2,16 @@
 `define LENGTH 4
 `include "uvm_macros.svh"
 import uvm_pkg::*;
-`include "dut.sv";
-`include "interface.sv";
-`include "sequence_item.sv";
-`include "sequence.sv";
-`include "monitor.sv";
-`include "driver.sv";
-`include "scoreboard.sv";
-`include "agent.sv";
-`include "environment.sv";
-`include "test.sv";
+`include "dut.sv"
+`include "interface.sv"
+`include "sequence_item.sv"
+`include "sequence.sv"
+`include "monitor.sv"
+`include "driver.sv"
+`include "scoreboard.sv"
+`include "agent.sv"
+`include "environment.sv"
+`include "test.sv"
 
 
 
@@ -29,7 +29,7 @@ module tb;
 
 	initial begin
     		clk <= 0;
-    		uvm_config_db#(virtual dut_if)::set(null, "uvm_test_top", "des_vif", _if);
-    		run_test("test_1011");
+    		uvm_config_db#(virtual dut_if)::set(null, "uvm_test_top", "dut_vif", _if);
+    		run_test("mytest");
   	end
 endmodule
